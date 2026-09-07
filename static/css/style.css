@@ -33,6 +33,7 @@ h1, .brand {
 
 .site-header {
     border-bottom: 1px solid var(--line);
+    background-color: var(--accent-dark);
 }
 
 .site-header .container {
@@ -45,7 +46,7 @@ h1, .brand {
 .brand {
     font-size: 1.3rem;
     font-weight: 700;
-    color: var(--ink);
+    color: var(--paper);
     text-decoration: none;
 }
 
@@ -55,7 +56,7 @@ h1, .brand {
 }
 
 .site-header nav a {
-    color: var(--ink);
+    color: var(--paper);
     text-decoration: none;
     font-size: 0.95rem;
 }
@@ -170,8 +171,9 @@ h1, .brand {
 }
 
 .site-footer {
+    background-color: var(--accent-dark);
     padding: 1.5rem;
-    color: var(--text-muted);
+    color: var(--paper);
     font-size: 0.85rem;
     border-top: 1px solid var(--line);
 }
@@ -192,4 +194,11 @@ h1, .brand {
     .social-links {
         justify-content: flex-start;
     }
+}
+
+.hero-content-details {
+    color: var(--text-muted);
+    font-size: small;
+    max-width: 480px;
+    margin-bottom: 1.5rem;
 }
