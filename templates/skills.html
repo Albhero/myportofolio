@@ -25,20 +25,20 @@
         <section class="experience-section" id="experience">
             <div class="container">
                 <p class="section-kicker">My journey so far</p>
-                <h1>Experience</h1>
+                <h1>Skills</h1>
 
                 <div class="experience-grid">
-                    {% for experience in experience_list %}
+                    {% for skills in skills_list %}
                         <article class="experience-card">
                             <span class="experience-category">
-                                {{ experience.get_category_display }}
+                                {{ skills.get_category_display }}
                             </span>
-                            <h2>{{ experience.title }}</h2>
+                            <h2>{{ skills.title }}</h2>
                             <p class="experience-description">
-                                {{ experience.description }}
+                                {{ skills.description }}
                             </p>
 
-                            {% if experience.is_ongoing %}
+                            {% if skills.is_ongoing %}
                                 <p class="experience-status">Ongoing</p>
                             {% else %}
                                 <p class="experience-status">Completed</p>
@@ -46,7 +46,7 @@
                         </article>
                     {% empty %}
                         <p class="empty-state">
-                            No experience has been added yet.
+                            No skills has been added yet.
                         </p>
                     {% endfor %}
                 </div>

@@ -200,6 +200,10 @@ h1, .brand {
     color: var(--text-muted);
     font-size: small;
     max-width: 480px;
+}
+
+.hero-content-links {
+    font-weight: bolder;
     margin-bottom: 1.5rem;
 }
 
