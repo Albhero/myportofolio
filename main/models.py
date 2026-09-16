@@ -2,7 +2,6 @@ import uuid
 
 from django.db import models
 
-
 class Experience(models.Model):
     EXPERIENCE_CHOICES = [
         ("internship", "Internship"),

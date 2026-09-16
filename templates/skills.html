@@ -1,32 +1,31 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ name }} - Portfolio</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/static/css/style.css">
-</head>
-<body>
-    <header class="site-header">
-        <div class="container">
-            <a href="#profile" class="brand">{{ name }}</a>
-            <nav>
-                <a href="{% url 'main:show_main' %}">Profile</a>
-                <a href="{% url 'main:show_experience' %}">Experience</a>
-                <a href="{% url 'main:show_skills' %}">Skills</a>
-            </nav>
-        </div>
-    </header>
-
+{% extends "base.html" %}
+{% block meta %}
+    <title>Projects - {{ name }}</title>
+{% endblock meta %}
+{% block content %}
     <main>
         <section class="experience-section" id="experience">
             <div class="container">
                 <p class="section-kicker">My journey so far</p>
                 <h1>Skills</h1>
-
+                <div class="skills-header">
+                    <a href="{% url 'main:create_skills' %}"
+                       class="button skills-add-button">
+                        <span aria-hidden="true">+</span>
+                        Add Skill
+                    </a>
+                </div>
+                <form method="get"
+                      action="{% url 'main:show_skills' %}"
+                      class="skills-search">
+                    <input type="search"
+                           name="title"
+                           value="{{ title_query }}"
+                           placeholder="Search based on skill name"
+                           class="skills-search__input"
+                           aria-label="Search based on skill name">
+                    <button type="submit" class="button">Search</button>
+                </form>
                 <div class="experience-grid">
                     {% for skills in skills_list %}
                         <article class="experience-card">
@@ -53,11 +52,5 @@
             </div>
         </section>
     </main>
-
-    <footer class="site-footer">
-        <div class="container">
-            <p>&copy; 2026 {{ name }}. Fakultas Ilmu Komputer, Universitas Indonesia.</p>
-        </div>
-    </footer>
-</body>
+{% endblock content %}
 </html>
