@@ -12,6 +12,7 @@
     --line: #e3d9c9;
     --text-muted: #6b6459;
     --radius: 4px;
+    --accent-red: #960204;
 }
 
 body {
@@ -32,33 +33,60 @@ h1, .brand {
 }
 
 .site-header {
+    width: 100%;
+    background-color: var(--paper);
     border-bottom: 1px solid var(--line);
-    background-color: var(--accent-dark);
-}
-
-.site-header .container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1.25rem 1.5rem;
 }
 
 .brand {
-    font-size: 1.3rem;
-    font-weight: 700;
-    color: var(--paper);
+    font-size: 1.8rem;
+    font-weight: 500;
+    color: var(--accent-red);
     text-decoration: none;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    line-height: 1;
 }
 
-.site-header nav {
+.header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    padding: 0.75rem 2rem 0.5rem 3rem;
+    width: 100%;
+}
+
+.header-top-nav a {
+    color: var(--ink);
+    text-decoration: none;
+    font-size: 1.1rem;
+    font-weight: 400;
+}
+
+.header-top-nav a:hover {
+    text-decoration: underline;
+}
+
+.header-bottom-bar {
+    background-color: var(--accent-red);
+    width: 100%;
+    padding: 0.2rem 2rem 0.2rem 3rem;
+}
+
+.header-bottom-nav {
     display: flex;
     gap: 2rem;
 }
 
-.site-header nav a {
+.header-bottom-nav a {
     color: var(--paper);
     text-decoration: none;
-    font-size: 0.95rem;
+    font-size: 1.1rem;
+    font-weight: 500;
+    font-family: 'Times New Roman', Times, serif;
+}
+
+.header-bottom-nav a:hover {
+    text-decoration: underline;
 }
 
 .hero {
@@ -154,7 +182,7 @@ h1, .brand {
     left: 1.25rem;
     width: 100%;
     height: 100%;
-    background-color: var(--accent);
+    background-color: var(--accent-red);
     border-radius: var(--radius);
     z-index: 0;
 }
@@ -171,7 +199,7 @@ h1, .brand {
 }
 
 .site-footer {
-    background-color: var(--accent-dark);
+    background-color: var(--accent-red);
     padding: 1.5rem;
     color: var(--paper);
     font-size: 0.85rem;
@@ -318,6 +346,24 @@ h1, .brand {
 
 .button-secondary {
     background: var(--ink);
+}
+
+.button-danger {
+    background: var(--accent-red);
+    color: var(--paper);
+}
+
+.skills-edit-button {
+    background: var(--accent-red);
+    color: var(--paper);
+}
+
+.button-danger:hover {
+    background: #6f0103;
+}
+
+.skills-edit-button:hover {
+    background: #6f0103;
 }
 
 .skills-header {
@@ -520,4 +566,90 @@ h1, .brand {
         width: 100%;
         text-align: center;
     }
+}
+
+.index-navigations-section {
+    margin-top: 2rem;
+}
+
+.navigations-header {
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    font-size: 1.8rem;
+    font-weight: normal;
+    color: var(--accent-red);
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 0.25rem;
+    margin-bottom: 1.5rem;
+}
+
+.navigations-item {
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--line);
+}
+
+.navigations-item:last-child {
+    border-bottom: none;
+}
+
+.navigations-title {
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    font-size: 1.25rem;
+    font-weight: normal;
+    margin-bottom: 0.75rem;
+}
+
+.navigations-title a {
+    color: var(--ink);
+    text-decoration: underline;
+}
+
+.navigations-title a:hover {
+    color: var(--accent-red);
+}
+
+.navigations-description {
+    color: var(--ink);
+    font-size: 0.95rem;
+    line-height: 1.5;
+    margin-bottom: 0.5rem;
+}
+
+.navigations-more-wrapper {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 0.5rem;
+}
+
+.navigations-read-more {
+    color: var(--ink);
+    font-size: 0.95rem;
+    text-decoration: underline;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+}
+
+.navigations-read-more:hover {
+    color: var(--accent-red);
+}
+
+.star-form {
+    display: inline;
+}
+
+.button-star {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: var(--ink);
+}
+
+.button-star.is-starred {
+    background: var(--accent);
+}
+
+.star-count {
+    padding: 0.05rem 0.4rem;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.25);
+    font-size: 0.8rem;
 }
