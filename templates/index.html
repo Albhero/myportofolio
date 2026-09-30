@@ -29,14 +29,26 @@
                         <a href="mailto:khalifahgigan@gmail.com" class="social-link">Email</a>
                     </div>
                 </div>
-                <div class="skills">
-                    <p class="hero-kicker">Navigation</p>
-                    <p class="hero-content">Experience</p>
-                    <p class="hero-content-details">{{ experience }}</p>
-                    <a href="{% url 'main:show_experience' %}" class="hero-content-links">Click here to see my experience!</a>
-                    <p class="hero-content">Skills</p>
-                    <p class="hero-content-details">{{ skills }}</p>
-                    <a href="{% url 'main:show_skills' %}" class="hero-content-links">Click here to see my skills!</a>
+                <div class="index-navigations-section">
+                    <h2 class="navigations-header">Navigation</h2>
+                    <article class="navigations-item">
+                        <h3 class="navigations-title">
+                            <a href="{% url 'main:show_experience' %}">Experience</a>
+                        </h3>
+                        <p class="navigations-description">{{ experience }}</p>
+                        <div class="navigations-more-wrapper">
+                            <a href="{% url 'main:show_experience' %}" class="navigations-read-more">See more...</a>
+                        </div>
+                    </article>
+                    <article class="navigations-item">
+                        <h3 class="navigations-title">
+                            <a href="{% url 'main:show_skills' %}">Skills</a>
+                        </h3>
+                        <p class="navigations-description">{{ skills }}</p>
+                        <div class="navigations-more-wrapper">
+                            <a href="{% url 'main:show_skills' %}" class="navigations-read-more">See more...</a>
+                        </div>
+                    </article>
                 </div>
             </div>
         </section>

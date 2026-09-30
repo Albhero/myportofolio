@@ -36,12 +36,17 @@
                             <p class="experience-description">
                                 {{ skills.description }}
                             </p>
-
-                            {% if skills.is_ongoing %}
-                                <p class="experience-status">Ongoing</p>
-                            {% else %}
-                                <p class="experience-status">Completed</p>
-                            {% endif %}
+                            <div class="skills-card-actions">
+                                <div class="skills-actions">
+                                    {% if project.project_url %}
+                                        <a href="{{ project.project_url }}" class="button">See Skills</a>
+                                    {% endif %}
+                                    <div class="btn-group" role="group">
+                                        <a href="{% url 'main:edit_skill' skills.id %}" class="button skills-edit-button">Edit Skill</a>
+                                        {% include "components/skills_delete_modal.html" with skills=skills %}
+                                    </div>
+                                </div>
+                            </div>
                         </article>
                     {% empty %}
                         <p class="empty-state">

@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block meta %}
+    <title>Edit Skill</title>
+{% endblock meta %}
+{% block content %}
+<section class="experience-section">
+    <div class="container">
+        <h1>Edit Skill</h1>
+        <form method="POST" action="{% url 'main:edit_skill' skill.id %}" class="skills-form">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="title" class="form-label">Title</label>
+                <input type="text" class="form-control" id="title" name="title" value="{{ skill.title }}" required>
+            </div>
+            <div class="form-group">
+                <label for="description" class="form-label">Description</label>
+                <textarea class="form-control" id="description" name="description" value="{{ skill.description }}" rows="3" required>{{ skill.description }}</textarea>
+            </div>
+            <div class="form-group">
+                <label for="title" class="form-label">Category</label>
+                <input type="text" class="form-control" id="category" name="category" value="{{ skill.category }}" required>
+            </div>
+            <a href="{% url 'main:show_skills' %}" class="btn btn-secondary">Cancel</a>
+            <button type="submit" class="button">Save Changes</button>
+        </form>
+    </div>
+</section>
+{% endblock content %}
+</html>
