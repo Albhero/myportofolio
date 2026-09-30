@@ -1,9 +1,6 @@
-from django.shortcuts import render
-
-from main.models import Experience
-from main.models import Skills
-
 from django.contrib import messages
+from django.contrib.auth import login, logout
+from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.core import serializers
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
@@ -11,7 +8,12 @@ from django.shortcuts import get_object_or_404, redirect, render
 from main.forms import SkillsForm, ExperienceForm
 from main.models import Experience, Skills
 
+import datetime
+from django.contrib.auth.decorators import login_required
+from django.core.exceptions import PermissionDenied
+
 def show_main(request):
+    last_login = request.COOKIES.get('last_login', 'No active login session / Cookie not found')
     context = {
         "name": "Albhero",
         "cap_name": "ALBHERO",
@@ -32,10 +34,10 @@ def show_main(request):
             "A list of all skills that have been earned through everyday life. Each skills "
             "are authentic and are categorized based on proficiency, which ranges from beginner, "
             "intermediate, advanced, and expert."
-        )
+        ),
+        "last_login": last_login,
     }
     return render(request, "index.html", context)
-
 
 def show_experience(request):
     context = {
@@ -59,9 +61,11 @@ def show_skills(request):
         "name": "Albhero",
         "full_name":"Khalifah Gigan Albhero",
         "skills_list": Skills.objects.all(),
+        "title_query": title_query,
     }
     return render(request, "skills.html", context)
 
+@login_required(login_url="/login/")
 def create_skills(request):
     form = SkillsForm(request.POST or None)
 
@@ -77,6 +81,7 @@ def create_skills(request):
     }
     return render(request, "skills_form.html", context)
 
+@login_required(login_url="/login/")
 def create_experience(request):
     form = ExperienceForm(request.POST or None)
 
@@ -92,6 +97,7 @@ def create_experience(request):
     }
     return render(request, "experience_form.html", context)
 
+@login_required(login_url="/login/")
 def delete_experience(request, experience_id):
     experience = get_object_or_404(Experience, pk=experience_id)
 
@@ -102,6 +108,7 @@ def delete_experience(request, experience_id):
 
     return redirect("main:show_experience")
 
+@login_required(login_url="/login/")
 def edit_experience(request, experience_id):
     experience = get_object_or_404(Experience, pk=experience_id)
     form = ExperienceForm(request.POST or None, instance=experience)
@@ -126,9 +133,10 @@ def get_skills_json(request):
     if title_query:
         skills = skills.filter(title__icontains=title_query)
 
-    skills_json = serializers.serialize("json", skills)
+    skills_json = serializers.serialize("json", skills, use_natural_foreign_keys=True)
     return HttpResponse(skills_json, content_type="application/json")
 
+@login_required(login_url="/login/")
 def delete_skills(request, skills_id):
     skill = get_object_or_404(Skills, pk=skills_id)
 
@@ -139,6 +147,7 @@ def delete_skills(request, skills_id):
 
     return redirect("main:show_skills")
 
+@login_required(login_url="/login/")
 def edit_skill(request, skill_id):
     skill = get_object_or_404(Skills, id=skill_id)
     if request.method == "POST":
@@ -150,3 +159,51 @@ def edit_skill(request, skill_id):
         return redirect("main:show_skills")
     
     return render(request, "edit_skill.html", {"skill": skill})
+
+def register(request):
+    form = UserCreationForm(request.POST or None)
+
+    if request.method == "POST" and form.is_valid():
+        form.save()
+        messages.success(request, "Account created successfully. Please log in.")
+        return redirect("main:login")
+
+    context = {
+        "name": "Albhero",
+        "form": form,
+    }
+    return render(request, "register.html", context)
+
+def login_user(request):
+    form = AuthenticationForm(request, data=request.POST or None)
+
+    if request.method == "POST" and form.is_valid():
+        user = form.get_user()
+        login(request, user)
+        response = redirect("main:show_main")
+        response.set_cookie('last_login', datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+        return response
+
+    context = {
+        "name": "Albhero",
+        "form": form,
+    }
+    return render(request, "login.html", context)
+
+def logout_user(request):
+    logout(request)
+    response = redirect("main:show_main")
+    response.delete_cookie('last_login')
+    return response
+
+@login_required(login_url="/login/")
+def toggle_star(request, skills_id):
+    skill = get_object_or_404(Skills, pk=skills_id)
+
+    if request.method == "POST":
+        if request.user in skill.starred_by.all():
+            skill.starred_by.remove(request.user)
+        else:
+            skill.starred_by.add(request.user)
+
+    return redirect("main:show_skills")

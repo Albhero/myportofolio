@@ -9,11 +9,13 @@
                 <p class="section-kicker">My journey so far</p>
                 <h1>Skills</h1>
                 <div class="skills-header">
-                    <a href="{% url 'main:create_skills' %}"
-                       class="button skills-add-button">
-                        <span aria-hidden="true">+</span>
-                        Add Skill
-                    </a>
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'main:create_skills' %}"
+                        class="button skills-add-button">
+                            <span aria-hidden="true">+</span>
+                            Add Skill
+                        </a>
+                    {% endif %} 
                 </div>
                 <form method="get"
                       action="{% url 'main:show_skills' %}"
@@ -38,13 +40,13 @@
                             </p>
                             <div class="skills-card-actions">
                                 <div class="skills-actions">
-                                    {% if project.project_url %}
-                                        <a href="{{ project.project_url }}" class="button">See Skills</a>
-                                    {% endif %}
+                                    {% include "components/skills_star.html" with skills=skills %}
+                                    {% if user.is_authenticated %}
                                     <div class="btn-group" role="group">
                                         <a href="{% url 'main:edit_skill' skills.id %}" class="button skills-edit-button">Edit Skill</a>
                                         {% include "components/skills_delete_modal.html" with skills=skills %}
                                     </div>
+                                    {% endif %} 
                                 </div>
                             </div>
                         </article>

@@ -1,0 +1,14 @@
+{% if user.is_authenticated %}
+    <form method="post" action="{% url 'main:toggle_star' skills.id %}" class="star-form">
+        {% csrf_token %}
+        <button type="submit" class="button button-star{% if user in skills.starred_by.all %} is-starred{% endif %}" title="{% if user in skills.starred_by.all %}Remove your star{% else %}Star this skill{% endif %}">
+            <span aria-hidden="true">★</span>
+            {% if user in skills.starred_by.all %}
+                Unstar
+            {% else %}
+                Star
+            {% endif %}
+            <span class="star-count">{{ skills.starred_by.count }}</span>
+        </button>
+    </form>
+{% endif %}

@@ -7,10 +7,12 @@
                 <h1>Experience</h1>
 
                 <div class="skills-header">
+                    {% if user.is_authenticated %}
                     <a href="{% url 'main:create_experience' %}"class="button skills-add-button">
                         <span aria-hidden="true">+</span>
                         Add Experience
                     </a>
+                    {% endif %} 
                 </div>
                 <div class="experience-grid">
                     {% for experience in experience_list %}
@@ -28,6 +30,7 @@
                             {% else %}
                                 <p class="experience-status">Completed</p>
                             {% endif %}
+                            {% if user.is_authenticated %}
                             <div class="skills-card-actions">
                                 <div class="skills-actions">
                                     <div class="btn-group" role="group">
@@ -36,6 +39,7 @@
                                     </div>
                                 </div>
                             </div>
+                            {% endif %} 
                         </article>
                     {% empty %}
                         <p class="empty-state">
