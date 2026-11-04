@@ -1,64 +1,15 @@
 import uuid
-
 from django.db import models
 from django.contrib.auth.models import User
 
-class Experience(models.Model):
-    EXPERIENCE_CHOICES = [
-        ("internship", "Internship"),
-        ("research", "Research"),
-        ("volunteer", "Volunteer"),
-        ("part-time", "Part-Time"),
-        ("full-time", "Full-Time"),
-        ("freelance", "Freelance"),
-    ]
-
+class Skill(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    title = models.CharField(max_length=255)
+    name = models.CharField(max_length=255)
+    proficiency = models.IntegerField(default=1) # 1 to 100 or 1 to 5 scale
     description = models.TextField()
-    category = models.CharField(
-        max_length=20,
-        choices=EXPERIENCE_CHOICES,
-        default="full-time",
-    )
-    thumbnail = models.URLField(blank=True, null=True)
-    started_at = models.DateTimeField(auto_now_add=True)
-    ended_at = models.DateTimeField(blank=True, null=True)
-    
-    starred_by = models.ManyToManyField(
-            User, related_name="starred_experience", blank=True
-        )
+    category = models.CharField(max_length=100, default='General')
+    credential_url = models.URLField(blank=True, null=True)
+    starred_by = models.ManyToManyField(User, related_name='starred_skills', blank=True)
 
     def __str__(self):
-        return self.title
-
-    @property
-    def is_ongoing(self):
-        return self.ended_at is None
-    
-class Skills(models.Model):
-    SKILLS_CHOICES = [
-        ("beginner", "Beginner"),
-        ("intermediate", "Intermediate"),
-        ("advanced", "Advanced"),
-        ("expert", "Expert"),
-    ]
-
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    title = models.CharField(max_length=255)
-    description = models.TextField()
-    category = models.CharField(
-        max_length=20,
-        choices=SKILLS_CHOICES,
-        default="Beginner",
-    )
-    thumbnail = models.URLField(blank=True, null=True)
-    started_at = models.DateTimeField(auto_now_add=True)
-    ended_at = models.DateTimeField(blank=True, null=True)
-    
-    starred_by = models.ManyToManyField(
-        User, related_name="starred_skills", blank=True
-    )
-
-    def __str__(self):
-        return self.title
+        return self.name

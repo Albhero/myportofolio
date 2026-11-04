@@ -1,63 +1,158 @@
-{% extends "base.html" %}
-{% block meta %}
-    <title>Projects - {{ name }}</title>
-{% endblock meta %}
+{% extends 'base.html' %}
+
+{% block title %}Skills Portfolio{% endblock %}
+
 {% block content %}
-    <main>
-        <section class="experience-section" id="experience">
-            <div class="container">
-                <p class="section-kicker">My journey so far</p>
-                <h1>Skills</h1>
-                <div class="skills-header">
-                    {% if user.is_authenticated %}
-                        <a href="{% url 'main:create_skills' %}"
-                        class="button skills-add-button">
-                            <span aria-hidden="true">+</span>
-                            Add Skill
-                        </a>
-                    {% endif %} 
+<div class="flex justify-between items-center mb-6">
+    <h2 class="text-2xl font-bold text-gray-800">Skills Overview</h2>
+    {% if user.is_superuser %}
+    <button onclick="openModal()" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium">+ Add Skill</button>
+    {% endif %}
+</div>
+
+<div class="mb-6">
+    <input type="text" id="searchInput" placeholder="Search skills..." class="w-full max-w-md px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+</div>
+
+<div id="skillsContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <!-- Rendered via JavaScript -->
+</div>
+
+{% include 'components/skill_form_modal.html' %}
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    const SEARCH_DEBOUNCE_DELAY = 300;
+    let searchTimeout;
+
+    async function fetchSkills(query = '') {
+        try {
+            const res = await fetch(`/api/v1/skills/?name=${encodeURIComponent(query)}`);
+            const data = await res.json();
+            renderSkills(data);
+        } catch (err) {
+            console.error('Error fetching skills:', err);
+        }
+    }
+
+    function renderSkills(skills) {
+        const container = document.getElementById('skillsContainer');
+        container.innerHTML = '';
+        
+        if (skills.length === 0) {
+            container.innerHTML = `<p class="text-gray-500 col-span-full">No skills found.</p>`;
+            return;
+        }
+
+        skills.forEach(skill => {
+            const card = document.createElement('div');
+            card.className = "bg-white p-6 rounded-xl shadow-md border hover:shadow-lg transition";
+            card.innerHTML = `
+                <div class="flex justify-between items-start mb-2">
+                    <h3 class="text-lg font-bold text-gray-900">${skill.name}</h3>
+                    <span class="text-xs px-2.5 py-1 bg-blue-100 text-blue-800 rounded-full font-semibold">${skill.category}</span>
                 </div>
-                <form method="get"
-                      action="{% url 'main:show_skills' %}"
-                      class="skills-search">
-                    <input type="search"
-                           name="title"
-                           value="{{ title_query }}"
-                           placeholder="Search based on skill name"
-                           class="skills-search__input"
-                           aria-label="Search based on skill name">
-                    <button type="submit" class="button">Search</button>
-                </form>
-                <div class="experience-grid">
-                    {% for skills in skills_list %}
-                        <article class="experience-card">
-                            <span class="experience-category">
-                                {{ skills.get_category_display }}
-                            </span>
-                            <h2>{{ skills.title }}</h2>
-                            <p class="experience-description">
-                                {{ skills.description }}
-                            </p>
-                            <div class="skills-card-actions">
-                                <div class="skills-actions">
-                                    {% include "components/skills_star.html" with skills=skills %}
-                                    {% if user.is_authenticated %}
-                                    <div class="btn-group" role="group">
-                                        <a href="{% url 'main:edit_skill' skills.id %}" class="button skills-edit-button">Edit Skill</a>
-                                        {% include "components/skills_delete_modal.html" with skills=skills %}
-                                    </div>
-                                    {% endif %} 
-                                </div>
-                            </div>
-                        </article>
-                    {% empty %}
-                        <p class="empty-state">
-                            No skills has been added yet.
-                        </p>
-                    {% endfor %}
+                <p class="text-gray-600 text-sm mb-4">${skill.description}</p>
+                <div class="mb-4">
+                    <div class="flex justify-between text-xs text-gray-500 mb-1">
+                        <span>Proficiency</span>
+                        <span>${skill.proficiency}%</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2">
+                        <div class="bg-blue-600 h-2 rounded-full" style="width: ${skill.proficiency}%"></div>
+                    </div>
                 </div>
-            </div>
-        </section>
-    </main>
-{% endblock content %}
-</html>
+                <div class="flex justify-between items-center text-sm pt-3 border-t">
+                    <button onclick="toggleStar('${skill.id}')" class="flex items-center space-x-1 ${skill.is_starred ? 'text-yellow-500 font-bold' : 'text-gray-400 hover:text-yellow-500'}">
+                        <span>★</span>
+                        <span>${skill.star_count}</span>
+                    </button>
+                    ${skill.credential_url ? `<a href="${skill.credential_url}" target="_blank" class="text-blue-600 hover:underline text-xs">Credential →</a>` : ''}
+                </div>
+            `;
+            container.appendChild(card);
+        });
+    }
+
+    async function toggleStar(skillId) {
+        try {
+            const res = await fetch(`/api/v1/skills/${skillId}/star/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': getCookie('csrftoken'),
+                    'Content-Type': 'application/json'
+                }
+            });
+            if (res.ok) {
+                const searchVal = document.getElementById('searchInput').value;
+                fetchSkills(searchVal);
+            } else {
+                showToast('Please login to star skills', 'error');
+            }
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
+    document.getElementById('searchInput').addEventListener('input', (e) => {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(() => {
+            fetchSkills(e.target.value);
+        }, SEARCH_DEBOUNCE_DELAY);
+    });
+
+    document.getElementById('addSkillForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const formData = new FormData(e.target);
+        
+        try {
+            const res = await fetch('/api/v1/skills/', {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: formData
+            });
+
+            if (res.ok) {
+                showToast('Skill added successfully!', 'success');
+                closeModal();
+                e.target.reset();
+                fetchSkills();
+            } else {
+                const errData = await res.json();
+                showToast('Error adding skill', 'error');
+            }
+        } catch (err) {
+            showToast('Network error', 'error');
+        }
+    });
+
+    function openModal() {
+        document.getElementById('skillModal').classList.remove('hidden');
+    }
+
+    function closeModal() {
+        document.getElementById('skillModal').classList.add('hidden');
+    }
+
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    // Initial fetch
+    fetchSkills();
+</script>
+{% endblock %}

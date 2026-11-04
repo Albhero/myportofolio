@@ -1,84 +1,14 @@
-from django.forms import ModelForm, TextInput, Textarea
-from main.models import Skills, Experience
+from django import forms
+from main.models import Skill
 
-class SkillsForm(ModelForm):
+class SkillForm(forms.ModelForm):
     class Meta:
-        model = Skills
-        fields = [
-            "title",
-            "description",
-            "category",
-        ]
-
-        labels = {
-            "title": "Skill Name",
-            "description": "Skill Description",
-            "category": "Skill Level",
-        }
-
+        model = Skill
+        fields = ['name', 'proficiency', 'description', 'category', 'credential_url']
         widgets = {
-            "title": TextInput(
-                attrs={
-                    "placeholder": "Skill Name",
-                    "maxlength": 255,
-                }
-            ),
-            "description": Textarea(
-                attrs={
-                    "placeholder": "Describe this skill and its uses...",
-                    "rows": 3,
-                }
-            ),
-            "category": TextInput(
-                attrs={
-                    "placeholder": "Beginner",
-                }
-            ),
-        }
-        
-class ExperienceForm(ModelForm):
-    class Meta:
-        model = Experience
-        fields = [
-            "title",
-            "description",
-            "category",
-        ]
-
-        labels = {
-            "title": "Experience Title",
-            "description": "Experience Description",
-            "category": "Type",
-            "started_at": "Start Year",
-            "ended_at": "End Year",
-        }
-
-        widgets = {
-            "title": TextInput(
-                attrs={
-                    "placeholder": "Experience title",
-                    "maxlength": 255,
-                }
-            ),
-            "description": Textarea(
-                attrs={
-                    "placeholder": "Describe this skill and its uses...",
-                    "rows": 3,
-                }
-            ),
-            "category": TextInput(
-                attrs={
-                    "placeholder": "Beginner",
-                }
-            ),
-            "started_at": TextInput(
-                attrs={
-                    "placeholder": "2006",
-                }
-            ),
-            "ended_at": TextInput(
-                attrs={
-                    "placeholder": "2026",
-                }
-            ),
+            'name': forms.TextInput(attrs={'class': 'w-full px-3 py-2 border rounded-lg', 'placeholder': 'Skill Name'}),
+            'proficiency': forms.NumberInput(attrs={'class': 'w-full px-3 py-2 border rounded-lg', 'min': 1, 'max': 100}),
+            'description': forms.Textarea(attrs={'class': 'w-full px-3 py-2 border rounded-lg', 'rows': 3}),
+            'category': forms.TextInput(attrs={'class': 'w-full px-3 py-2 border rounded-lg', 'placeholder': 'e.g., Backend, Frontend, DevOps'}),
+            'credential_url': forms.URLInput(attrs={'class': 'w-full px-3 py-2 border rounded-lg', 'placeholder': 'https://...'}),
         }
